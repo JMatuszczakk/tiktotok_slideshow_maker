@@ -32,3 +32,19 @@ for i in range(howMany):
             image_with_text = add_centered_text_to_image(uploaded_images[i], texts[i], font_size=size, output_path=output_image_path)
             output_images.append((output_image_path, image_with_text))
             st.image(image_with_text, caption=f"Obraz Wyjściowy {i + 1}", use_column_width=True)
+# Utwórz plik ZIP w pamięci
+if st.button("Pobierz Wszystkie Obrazy jako ZIP"):
+    zip_buffer = BytesIO()
+    with ZipFile(zip_buffer, "w") as zip_file:
+        for output_image_path, image_with_text in output_images:
+            # Dodaj każdy przetworzony obraz do pliku ZIP
+            zip_file.write(output_image_path, os.path.basename(output_image_path))
+    zip_buffer.seek(0)
+
+    # Udostępnij przycisk do pobrania pliku ZIP
+    st.download_button(
+        label="Pobierz ZIP",
+        data=zip_buffer,
+        file_name="przetworzone_obrazy.zip",
+        mime="application/zip"
+    )
